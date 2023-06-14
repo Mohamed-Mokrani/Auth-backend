@@ -10,10 +10,6 @@ const {
 } = require("../middleware/validator");
 const isAuth = require("../middleware/passport");
 
-// router.get("/", (req, res) => {
-//   res.send("hello world");
-// });
-
 //register
 router.post("/register", registerRules(), validation, async (req, res) => {
   const { name, lastName, email, password } = req.body;
@@ -32,6 +28,7 @@ router.post("/register", registerRules(), validation, async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, genSalt);
     console.log(hashedPassword);
     newUser.password = hashedPassword;
+    
     //generate a token
     const newUserToken = await newUser.save();
     const payload = {
@@ -41,6 +38,7 @@ router.post("/register", registerRules(), validation, async (req, res) => {
     const token = jwt.sign(payload, process.env.SecretOrKey, {
       expiresIn: 10000,
     });
+    
     //save the user
     res
       .status(200)
